@@ -27,7 +27,9 @@ import com.bueno.spi.service.BotServiceProvider;
 public class DestroyerBot implements BotServiceProvider {
     @Override
     public int getRaiseResponse(GameIntel intel) {
-        return 0;
+        if (intel.getHandPoints() == 9 && intel.getOpponentScore() >= 3)
+            return 0;
+        return -1;
     }
 
     @Override
