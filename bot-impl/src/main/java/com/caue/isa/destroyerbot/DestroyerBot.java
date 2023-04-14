@@ -54,11 +54,13 @@ public class DestroyerBot implements BotServiceProvider {
     public CardToPlay chooseCard(GameIntel intel) {
         if (intel.getOpponentCard().isPresent()) {
             Optional<TrucoCard> strongerCard = getCardStrongerThanOpponentOne(intel);
+            Optional<TrucoCard> equalCard = getWeakestCardEqualsToOpponentCard(intel);
             Optional<TrucoCard> weakestCard = getWeakestCard(intel);
             if (strongerCard.isPresent())
                 return CardToPlay.of(strongerCard.get());
-            else
-                return CardToPlay.of(weakestCard.get());
+            if (equalCard.isPresent())
+                return CardToPlay.of(equalCard.get());
+            return CardToPlay.of(weakestCard.get());
         }
         return CardToPlay.of(intel.getCards().get(0));
     }
