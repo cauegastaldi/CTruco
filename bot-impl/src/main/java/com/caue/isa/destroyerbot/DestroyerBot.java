@@ -22,7 +22,10 @@ package com.caue.isa.destroyerbot;
 
 import com.bueno.spi.model.CardToPlay;
 import com.bueno.spi.model.GameIntel;
+import com.bueno.spi.model.TrucoCard;
 import com.bueno.spi.service.BotServiceProvider;
+
+import java.util.Optional;
 
 public class DestroyerBot implements BotServiceProvider {
     @Override
@@ -44,6 +47,19 @@ public class DestroyerBot implements BotServiceProvider {
 
     @Override
     public CardToPlay chooseCard(GameIntel intel) {
+        if (intel.getOpponentCard().isPresent()) {
+            Optional<TrucoCard> strongerCard = getCardStrongerThanOpponentOne(intel);
+            if (strongerCard.isPresent())
+                return CardToPlay.of(strongerCard.get());
+        }
         return CardToPlay.of(intel.getCards().get(0));
+    }
+
+    private Optional<TrucoCard> getCardStrongerThanOpponentOne(GameIntel intel) {
+        TrucoCard opponentCard = intel.getOpponentCard().get();
+        TrucoCard vira = intel.getVira();
+        return intel.getCards().stream()
+                .filter(card -> card.compareValueTo(opponentCard, vira) > 0)
+                .min(TrucoCard::relativeValue);
     }
 }
