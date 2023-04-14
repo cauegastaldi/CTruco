@@ -67,7 +67,6 @@ class DestroyerBotTest {
             cards = List.of(TrucoCard.of(CardRank.KING, CardSuit.HEARTS),
                             TrucoCard.of(CardRank.ACE, CardSuit.DIAMONDS));
             opponentCard = Optional.of(TrucoCard.of(CardRank.SEVEN, CardSuit.CLUBS));
-            
             when(intel.getVira()).thenReturn(TrucoCard.of(CardRank.FOUR, CardSuit.SPADES));
             when(intel.getOpponentCard()).thenReturn(opponentCard);
             when(intel.getCards()).thenReturn(cards);
@@ -76,6 +75,21 @@ class DestroyerBotTest {
                     .isEqualTo(TrucoCard.of(CardRank.ACE, CardSuit.DIAMONDS));
         }
 
-    }
+        @Test
+        @DisplayName("Should play the weakest card if doesn't have a card stronger than the opponent card")
+        void shouldPlayTheWeakestCardIfDoesNotHaveAStrongerCardThanTheOpponentCard() {
+            cards = List.of(TrucoCard.of(CardRank.SEVEN, CardSuit.DIAMONDS),
+                            TrucoCard.of(CardRank.FOUR, CardSuit.HEARTS),
+                            TrucoCard.of(CardRank.SIX, CardSuit.SPADES));
 
+            opponentCard = Optional.of(TrucoCard.of(CardRank.KING, CardSuit.CLUBS));
+
+            when(intel.getVira()).thenReturn(TrucoCard.of(CardRank.FOUR, CardSuit.SPADES));
+            when(intel.getOpponentCard()).thenReturn(opponentCard);
+            when(intel.getCards()).thenReturn(cards);
+
+            assertThat(sut.chooseCard(intel).content())
+                    .isEqualTo(TrucoCard.of(CardRank.FOUR, CardSuit.HEARTS));
+        }
+    }
 }
