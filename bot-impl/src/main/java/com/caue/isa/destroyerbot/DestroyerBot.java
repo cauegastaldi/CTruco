@@ -63,7 +63,8 @@ public class DestroyerBot implements BotServiceProvider {
         TrucoCard vira = intel.getVira();
         return intel.getCards().stream()
                 .filter(card -> card.compareValueTo(opponentCard, vira) > 0)
-                .min(TrucoCard::relativeValue);
+                .min((card1, card2) ->
+                        card1.compareValueTo(card2, vira));
     }
 
     private Optional<TrucoCard> getWeakestCard(GameIntel intel) {
