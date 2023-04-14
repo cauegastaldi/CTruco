@@ -72,7 +72,7 @@ class DestroyerBotTest {
             when(intel.getCards()).thenReturn(cards);
 
             assertThat(sut.chooseCard(intel).content())
-                    .isEqualTo(TrucoCard.of(CardRank.ACE, CardSuit.DIAMONDS));
+                    .isEqualTo(TrucoCard.of(CardRank.KING, CardSuit.HEARTS));
         }
 
         @Test
