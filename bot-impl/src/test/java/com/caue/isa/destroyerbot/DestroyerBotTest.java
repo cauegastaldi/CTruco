@@ -20,7 +20,10 @@
 
 package com.caue.isa.destroyerbot;
 
+import com.bueno.spi.model.CardRank;
+import com.bueno.spi.model.CardSuit;
 import com.bueno.spi.model.GameIntel;
+import com.bueno.spi.model.TrucoCard;
 import com.bueno.spi.service.BotServiceProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,6 +31,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -49,6 +55,27 @@ class DestroyerBotTest {
             when(intel.getOpponentScore()).thenReturn(3);
             assertThat(sut.getRaiseResponse(intel)).isEqualTo(0);
         }
+    }
+
+    @Nested @DisplayName("When playing a card")
+    class ChooseCardTest {
+        List<TrucoCard> cards;
+        Optional<TrucoCard> opponentCard;
+        @Test
+        @DisplayName("Should play the weakest card between the strongest ones than the opponent one")
+        void shouldPlayTheWeakestCardBetweenTheStrongestOnesThanOpponentOne() {
+            cards = List.of(TrucoCard.of(CardRank.KING, CardSuit.HEARTS),
+                            TrucoCard.of(CardRank.ACE, CardSuit.DIAMONDS));
+            opponentCard = Optional.of(TrucoCard.of(CardRank.SEVEN, CardSuit.CLUBS));
+            
+            when(intel.getVira()).thenReturn(TrucoCard.of(CardRank.FOUR, CardSuit.SPADES));
+            when(intel.getOpponentCard()).thenReturn(opponentCard);
+            when(intel.getCards()).thenReturn(cards);
+
+            assertThat(sut.chooseCard(intel).content())
+                    .isEqualTo(TrucoCard.of(CardRank.ACE, CardSuit.DIAMONDS));
+        }
+
     }
 
 }
