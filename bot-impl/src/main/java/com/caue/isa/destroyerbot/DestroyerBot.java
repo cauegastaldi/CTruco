@@ -49,8 +49,11 @@ public class DestroyerBot implements BotServiceProvider {
     public CardToPlay chooseCard(GameIntel intel) {
         if (intel.getOpponentCard().isPresent()) {
             Optional<TrucoCard> strongerCard = getCardStrongerThanOpponentOne(intel);
+            Optional<TrucoCard> weakestCard = getWeakestCard(intel);
             if (strongerCard.isPresent())
                 return CardToPlay.of(strongerCard.get());
+            else
+                return CardToPlay.of(weakestCard.get());
         }
         return CardToPlay.of(intel.getCards().get(0));
     }
@@ -61,5 +64,12 @@ public class DestroyerBot implements BotServiceProvider {
         return intel.getCards().stream()
                 .filter(card -> card.compareValueTo(opponentCard, vira) > 0)
                 .min(TrucoCard::relativeValue);
+    }
+
+    private Optional<TrucoCard> getWeakestCard(GameIntel intel) {
+        TrucoCard vira = intel.getVira();
+        return intel.getCards().stream()
+                .min((card1, card2) ->
+                        card1.compareValueTo(card2, vira));
     }
 }
