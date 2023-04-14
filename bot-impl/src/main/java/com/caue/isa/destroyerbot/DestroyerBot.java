@@ -25,6 +25,7 @@ import com.bueno.spi.model.GameIntel;
 import com.bueno.spi.model.TrucoCard;
 import com.bueno.spi.service.BotServiceProvider;
 
+import java.util.List;
 import java.util.Optional;
 
 public class DestroyerBot implements BotServiceProvider {
@@ -42,7 +43,11 @@ public class DestroyerBot implements BotServiceProvider {
 
     @Override
     public boolean decideIfRaises(GameIntel intel) {
-        return false;
+        if (!intel.getRoundResults().isEmpty()) {
+            if (isGoingToLoseTheHand(intel))
+                return false;
+        }
+        return true;
     }
 
     @Override
@@ -73,4 +78,22 @@ public class DestroyerBot implements BotServiceProvider {
                 .min((card1, card2) ->
                         card1.compareValueTo(card2, vira));
     }
+
+    private boolean isGoingToLoseTheHand(GameIntel intel) {
+        List<GameIntel.RoundResult> results = intel.getRoundResults();
+        return results.contains(GameIntel.RoundResult.LOST) &&
+                getCardStrongerThanOpponentOne(intel).isEmpty() &&
+                getWeakestCardEqualsToOpponentCard(intel).isEmpty();
+    }
+
+    private Optional<TrucoCard> getWeakestCardEqualsToOpponentCard(GameIntel intel) {
+        TrucoCard vira = intel.getVira();
+        TrucoCard opponentCard = intel.getOpponentCard().get();
+        return intel.getCards().stream()
+                .filter(card -> card.compareValueTo(opponentCard, vira) == 0)
+                .min((card1, card2) ->
+                        card1.compareValueTo(card2, vira));
+
+    }
+
 }
