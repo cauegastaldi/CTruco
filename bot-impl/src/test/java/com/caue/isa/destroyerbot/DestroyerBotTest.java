@@ -61,6 +61,7 @@ class DestroyerBotTest {
     class ChooseCardTest {
         List<TrucoCard> cards;
         Optional<TrucoCard> opponentCard;
+
         @Test
         @DisplayName("Should play the weakest card between the strongest ones than the opponent one")
         void shouldPlayTheWeakestCardBetweenTheStrongestOnesThanOpponentOne() {
@@ -90,6 +91,34 @@ class DestroyerBotTest {
 
             assertThat(sut.chooseCard(intel).content())
                     .isEqualTo(TrucoCard.of(CardRank.FOUR, CardSuit.HEARTS));
+        }
+
+        @Nested
+        @DisplayName("When requesting a point raise")
+        class DecidesIfRaisesTest {
+            TrucoCard vira;
+            List<TrucoCard> cards;
+            List<GameIntel.RoundResult> results;
+            Optional<TrucoCard> opponentCard;
+
+            @Test
+            @DisplayName("Should not request a point raise if bot will lose the hand")
+            void shouldNotRequestAPointRaiseIfWillLoseTheHand() {
+                results = List.of(GameIntel.RoundResult.LOST, GameIntel.RoundResult.WON);
+                vira = TrucoCard.of(CardRank.FIVE, CardSuit.HEARTS);
+                cards = List.of(TrucoCard.of(CardRank.SEVEN, CardSuit.DIAMONDS),
+                                TrucoCard.of(CardRank.FOUR, CardSuit.HEARTS),
+                                TrucoCard.of(CardRank.FIVE, CardSuit.SPADES));
+
+                opponentCard = Optional.of(TrucoCard.of(CardRank.SIX, CardSuit.CLUBS));
+
+                when(intel.getVira()).thenReturn(vira);
+                when(intel.getCards()).thenReturn(cards);
+                when(intel.getOpponentCard()).thenReturn(opponentCard);
+                when(intel.getRoundResults()).thenReturn(results);
+
+                assertThat(sut.decideIfRaises(intel)).isFalse();
+            }
         }
     }
 }
