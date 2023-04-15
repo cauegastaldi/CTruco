@@ -48,12 +48,28 @@ class DestroyerBotTest {
 
     @Nested @DisplayName("When get a raise request")
     class GetRaiseResponseTest {
+        TrucoCard vira;
+        List<TrucoCard> cards;
         @Test
         @DisplayName("Should accept raise request if it is a doze and opponent score is greater than two")
         void shouldAcceptRaiseRequestIfItIsDozeAndOpponentScoreIsGreaterThanTwo() {
             when(intel.getHandPoints()).thenReturn(9);
             when(intel.getOpponentScore()).thenReturn(3);
             assertThat(sut.getRaiseResponse(intel)).isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("Should respond with point raise if has strongest manilhas")
+        void shouldReRaisePointRaiseRequestIfItHasTheTwoStrongestManilhas(){
+            vira = TrucoCard.of(CardRank.KING, CardSuit.SPADES);
+            cards = List.of(TrucoCard.of(CardRank.ACE, CardSuit.CLUBS),
+                    TrucoCard.of(CardRank.ACE, CardSuit.HEARTS),
+                    TrucoCard.of(CardRank.SIX, CardSuit.DIAMONDS));
+
+            when(intel.getVira()).thenReturn(vira);
+            when(intel.getCards()).thenReturn(cards);
+
+            assertThat(sut.getRaiseResponse(intel)).isEqualTo(1);
         }
     }
 
