@@ -41,12 +41,22 @@ public class DestroyerBot implements BotServiceProvider {
         return false;
     }
 
+    private boolean isMaoDeOnze(GameIntel intel){
+        int opponentScore = intel.getOpponentScore();
+        int myScore = intel.getScore();
+        if (opponentScore == 11 || myScore == 11) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public boolean decideIfRaises(GameIntel intel) {
         if (!intel.getRoundResults().isEmpty()) {
             if (isGoingToLoseTheHand(intel))
                 return false;
         }
+        if (isMaoDeOnze(intel)) return false;
         return true;
     }
 
@@ -97,5 +107,7 @@ public class DestroyerBot implements BotServiceProvider {
                         card1.compareValueTo(card2, vira));
 
     }
+
+
 
 }
