@@ -137,5 +137,15 @@ class DestroyerBotTest {
 
             assertThat(sut.decideIfRaises(intel)).isFalse();
         }
+
+        @Test
+        @DisplayName("Should not ask for point raises during 'mao de onze' turns.")
+        void shouldNotAskForPointRaiseDuringMaoDeOnze(){
+            when(intel.getScore()).thenReturn(11);
+            when(intel.getOpponentScore()).thenReturn(11);
+            assertThat(sut.decideIfRaises(intel)).isFalse();
+        }
     }
+
+
 }
