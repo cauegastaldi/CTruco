@@ -23,7 +23,6 @@ package com.caue.isa.destroyerbot;
 import com.bueno.spi.model.*;
 import com.bueno.spi.service.BotServiceProvider;
 
-import java.util.List;
 import java.util.Optional;
 
 public class DestroyerBot implements BotServiceProvider {
@@ -55,10 +54,6 @@ public class DestroyerBot implements BotServiceProvider {
 
     @Override
     public boolean decideIfRaises(GameIntel intel) {
-        if (!intel.getRoundResults().isEmpty()) {
-            if (isGoingToLoseTheHand(intel))
-                return false;
-        }
         if (isMaoDeOnze(intel)) return false;
         if(getScoreDifference(intel) >= -6) return false;
         return true;
@@ -93,13 +88,6 @@ public class DestroyerBot implements BotServiceProvider {
         return intel.getCards().stream()
                 .min((card1, card2) ->
                         card1.compareValueTo(card2, vira));
-    }
-
-    private boolean isGoingToLoseTheHand(GameIntel intel) {
-        List<GameIntel.RoundResult> results = intel.getRoundResults();
-        return results.contains(GameIntel.RoundResult.LOST) &&
-                getCardStrongerThanOpponentOne(intel).isEmpty() &&
-                getWeakestCardEqualsToOpponentCard(intel).isEmpty();
     }
 
     private Optional<TrucoCard> getWeakestCardEqualsToOpponentCard(GameIntel intel) {
