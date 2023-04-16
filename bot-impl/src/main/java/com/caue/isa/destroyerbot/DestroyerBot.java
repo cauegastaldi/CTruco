@@ -39,6 +39,8 @@ public class DestroyerBot implements BotServiceProvider {
 
     @Override
     public boolean getMaoDeOnzeResponse(GameIntel intel) {
+        if (hasAtLeastOneManilhaAndTwoCardsAboveAceRank(intel))
+            return true;
         return false;
     }
 
@@ -125,5 +127,12 @@ public class DestroyerBot implements BotServiceProvider {
         return scoreDifference;
     }
 
-
+    private boolean hasAtLeastOneManilhaAndTwoCardsAboveAceRank(GameIntel intel) {
+        TrucoCard vira = intel.getVira();
+        return intel.getCards().stream()
+                .filter(card -> card.isManilha(vira) || card.getRank().equals(CardRank.TWO)
+                        || card.getRank().equals(CardRank.THREE))
+                .toList()
+                .size() == 3;
+    }
 }
