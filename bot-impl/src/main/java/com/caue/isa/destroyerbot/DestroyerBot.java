@@ -58,7 +58,7 @@ public class DestroyerBot implements BotServiceProvider {
                 return false;
         }
         if (isMaoDeOnze(intel)) return false;
-
+        if(getScoreDifference(intel) >= -6) return false;
         return true;
     }
 
@@ -119,5 +119,11 @@ public class DestroyerBot implements BotServiceProvider {
         }
         return false;
     }
+
+    private int getScoreDifference(GameIntel intel){
+        int scoreDifference = intel.getScore() - intel.getOpponentScore();
+        return scoreDifference;
+    }
+
 
 }
