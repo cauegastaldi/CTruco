@@ -20,9 +20,7 @@
 
 package com.caue.isa.destroyerbot;
 
-import com.bueno.spi.model.CardToPlay;
-import com.bueno.spi.model.GameIntel;
-import com.bueno.spi.model.TrucoCard;
+import com.bueno.spi.model.*;
 import com.bueno.spi.service.BotServiceProvider;
 
 import java.util.List;
@@ -33,6 +31,9 @@ public class DestroyerBot implements BotServiceProvider {
     public int getRaiseResponse(GameIntel intel) {
         if (intel.getHandPoints() == 9 && intel.getOpponentScore() >= 3)
             return 0;
+        if(hasStrongestManilhas(intel)) {
+            return 1;
+        }
         return -1;
     }
 
@@ -57,6 +58,7 @@ public class DestroyerBot implements BotServiceProvider {
                 return false;
         }
         if (isMaoDeOnze(intel)) return false;
+
         return true;
     }
 
@@ -108,6 +110,14 @@ public class DestroyerBot implements BotServiceProvider {
 
     }
 
-
+    private boolean hasStrongestManilhas(GameIntel intel) {
+        TrucoCard vira = intel.getVira();
+        TrucoCard zap = TrucoCard.of(vira.getRank().next(), CardSuit.CLUBS);
+        TrucoCard copas = TrucoCard.of(vira.getRank().next(), CardSuit.HEARTS);
+        if(intel.getCards().contains(zap) && intel.getCards().contains(copas)) {
+            return true;
+        }
+        return false;
+    }
 
 }
