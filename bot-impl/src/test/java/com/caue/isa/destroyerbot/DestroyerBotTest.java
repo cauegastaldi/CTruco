@@ -71,6 +71,12 @@ class DestroyerBotTest {
 
             assertThat(sut.getRaiseResponse(intel)).isEqualTo(1);
         }
+
+        @Test
+        @DisplayName("Should accept point raise request ")
+        void shouldAcceptPointRaiseRequestIfItHasAtLeastTwoCardsBetterRankedThanTwo(){
+
+        }
     }
 
     @Nested @DisplayName("When playing a card")
@@ -159,6 +165,14 @@ class DestroyerBotTest {
         void shouldNotAskForPointRaiseDuringMaoDeOnze(){
             when(intel.getScore()).thenReturn(11);
             when(intel.getOpponentScore()).thenReturn(11);
+            assertThat(sut.decideIfRaises(intel)).isFalse();
+        }
+
+        @Test
+        @DisplayName("Should not ask for point raise if the opponent is winning by 6 or more points.")
+        void shouldNotAskForPointRaiseIfOpponentIsWinningBySixOrMorePoints(){
+            when(intel.getScore()).thenReturn(1);
+            when(intel.getOpponentScore()).thenReturn(10);
             assertThat(sut.decideIfRaises(intel)).isFalse();
         }
     }
