@@ -55,7 +55,7 @@ public class DestroyerBot implements BotServiceProvider {
     @Override
     public boolean decideIfRaises(GameIntel intel) {
         if (isMaoDeOnze(intel)) return false;
-        if(getScoreDifference(intel) >= -6) return false;
+        if(getScoreDifference(intel) <= -6) return false;
         return true;
     }
 
@@ -97,7 +97,6 @@ public class DestroyerBot implements BotServiceProvider {
                 .filter(card -> card.compareValueTo(opponentCard, vira) == 0)
                 .min((card1, card2) ->
                         card1.compareValueTo(card2, vira));
-
     }
 
     private boolean hasStrongestManilhas(GameIntel intel) {
