@@ -71,8 +71,44 @@ public class DestroyerBot implements BotServiceProvider {
                 return CardToPlay.of(equalCard.get());
             return CardToPlay.of(weakestCard.get());
         }
+        if(intel.getOpponentCard().isEmpty() && intel.getCards().size() == 3){
+            Optional<TrucoCard> firstCardToPlay = getFirstCardToPlay(intel);
+            if(firstCardToPlay.isPresent()){
+                CardToPlay.of(firstCardToPlay.get());
+            }
+        }
         return CardToPlay.of(intel.getCards().get(0));
     }
+
+    private Optional<TrucoCard> getFirstCardToPlay(GameIntel intel){
+        if(intel.getVira().getRank() != CardRank.QUEEN || intel.getVira().getRank() != CardRank.KING
+                || intel.getVira().getRank() != CardRank.ACE){
+            Optional<TrucoCard> cardWithRankTwo = getStrongerCardWithRank(intel, CardRank.TWO);
+            Optional<TrucoCard> cardWithRankAce = getStrongerCardWithRank(intel, CardRank.ACE);
+            Optional<TrucoCard> cardWithRankKing = getStrongerCardWithRank(intel, CardRank.KING);
+            if(cardWithRankKing.isPresent()){
+                return cardWithRankKing;
+            }
+            if(cardWithRankAce.isPresent()){
+                return cardWithRankAce;
+            }
+            if(cardWithRankTwo.isPresent()){
+                return cardWithRankTwo;
+            }
+
+
+        }
+        return Optional.empty();
+    }
+
+    private Optional<TrucoCard> getStrongerCardWithRank(GameIntel intel, CardRank rank) {
+        TrucoCard vira = intel.getVira();
+        return intel.getCards().stream()
+                .filter(card -> card.getRank().equals(rank))
+                .max((card1, card2) -> card1.compareValueTo(card2, vira));
+    }
+
+
 
     private Optional<TrucoCard> getCardStrongerThanOpponentOne(GameIntel intel) {
         TrucoCard opponentCard = intel.getOpponentCard().get();
