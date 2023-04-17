@@ -81,6 +81,7 @@ class DestroyerBotTest {
 
     @Nested @DisplayName("When playing a card")
     class ChooseCardTest {
+        TrucoCard vira;
         List<TrucoCard> cards;
         Optional<TrucoCard> opponentCard;
 
@@ -132,6 +133,21 @@ class DestroyerBotTest {
             assertThat(sut.chooseCard(intel).content())
                     .isEqualTo(TrucoCard.of(CardRank.FOUR, CardSuit.HEARTS));
         }
+
+        @Test
+        @DisplayName("Should play a king, ace or two (in this order) in the first round (only if they are not manilhas and if it is the first to play)")
+        void shouldPlayAKingOrAceOrTwoInTheFirstRoundIfItIsTheFirstToPlay(){
+            vira = TrucoCard.of(CardRank.ACE, CardSuit.SPADES);
+
+            cards = List.of(TrucoCard.of(CardRank.KING, CardSuit.SPADES),
+                    TrucoCard.of(CardRank.TWO, CardSuit.DIAMONDS),
+                    TrucoCard.of(CardRank.FIVE, CardSuit.DIAMONDS));
+            when(intel.getVira()).thenReturn(vira);
+            when(intel.getCards()).thenReturn(cards);
+
+            assertThat(sut.chooseCard(intel).content()).isEqualTo(TrucoCard.of(CardRank.KING, CardSuit.SPADES));
+        }
+
     }
     @Nested
     @DisplayName("When requesting a point raise")
