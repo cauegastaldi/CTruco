@@ -23,6 +23,7 @@ package com.caue.isa.destroyerbot;
 import com.bueno.spi.model.*;
 import com.bueno.spi.service.BotServiceProvider;
 
+import java.util.List;
 import java.util.Optional;
 
 public class DestroyerBot implements BotServiceProvider {
@@ -33,6 +34,8 @@ public class DestroyerBot implements BotServiceProvider {
         if(hasStrongestManilhas(intel)) {
             return 1;
         }
+        if (getCardsAboveRankTwo(intel).size() >=2)
+            return 0;
         return -1;
     }
 
@@ -133,6 +136,13 @@ public class DestroyerBot implements BotServiceProvider {
                 .filter(card -> card.compareValueTo(opponentCard, vira) == 0)
                 .min((card1, card2) ->
                         card1.compareValueTo(card2, vira));
+    }
+
+    private List<TrucoCard> getCardsAboveRankTwo(GameIntel intel) {
+        TrucoCard vira = intel.getVira();
+        return intel.getCards().stream()
+                .filter(card -> card.getRank().equals(CardRank.THREE) || card.isManilha(vira))
+                .toList();
     }
 
     private boolean hasStrongestManilhas(GameIntel intel) {
