@@ -33,11 +33,13 @@ public class DestroyerBot implements BotServiceProvider {
             return 0;
         if (intel.getOpponentScore() == 11)
             return 1;
-        if(hasStrongestManilhas(intel)) {
-            return 1;
+        if (intel.getScore() != 11) {
+            if (hasStrongestManilhas(intel)) {
+                return 1;
+            }
+            if (getCardsAboveRankTwo(intel).size() >= 2)
+                return 0;
         }
-        if (getCardsAboveRankTwo(intel).size() >=2)
-            return 0;
         return -1;
     }
 
