@@ -50,6 +50,7 @@ class DestroyerBotTest {
     class GetRaiseResponseTest {
         TrucoCard vira;
         List<TrucoCard> cards;
+
         @Test
         @DisplayName("Should accept raise request if it is a doze and opponent score is greater than two")
         void shouldAcceptRaiseRequestIfItIsDozeAndOpponentScoreIsGreaterThanTwo() {
@@ -85,6 +86,14 @@ class DestroyerBotTest {
             when(intel.getCards()).thenReturn(cards);
 
             assertThat(sut.getRaiseResponse(intel)).isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("Should respond with point raise if opponent score is equal to eleven")
+        void shouldReRaisePointRaiseRequestIfOpponentScoreIsEqualToEleven(){
+            when(intel.getOpponentScore()).thenReturn(11);
+
+            assertThat(sut.getRaiseResponse(intel)).isEqualTo(1);
         }
     }
 
