@@ -73,9 +73,18 @@ class DestroyerBotTest {
         }
 
         @Test
-        @DisplayName("Should accept point raise request ")
-        void shouldAcceptPointRaiseRequestIfItHasAtLeastTwoCardsBetterRankedThanTwo(){
+        @DisplayName("Should accept point raise request if it has at least two cards with " +
+                     "rank greater than 'two' rank")
+        void shouldAcceptPointRaiseRequestIfItHasAtLeastTwoCardsWithRankGreaterThanTwo(){
+            vira = TrucoCard.of(CardRank.KING, CardSuit.SPADES);
+            cards = List.of(TrucoCard.of(CardRank.THREE, CardSuit.CLUBS),
+                    TrucoCard.of(CardRank.THREE, CardSuit.HEARTS),
+                    TrucoCard.of(CardRank.JACK, CardSuit.DIAMONDS));
 
+            when(intel.getVira()).thenReturn(vira);
+            when(intel.getCards()).thenReturn(cards);
+
+            assertThat(sut.getRaiseResponse(intel)).isEqualTo(0);
         }
     }
 
