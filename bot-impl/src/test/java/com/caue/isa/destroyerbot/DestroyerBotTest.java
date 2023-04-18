@@ -95,6 +95,15 @@ class DestroyerBotTest {
 
             assertThat(sut.getRaiseResponse(intel)).isEqualTo(1);
         }
+
+        @Test
+        @DisplayName("Should not accept or re-raise point raise requests if bot score is equal to eleven and " +
+                     "it will not lose the game")
+        void shouldNotAcceptOrReRaiseRaiseRequestIfScoreIsEqualToEleven(){
+            when(intel.getScore()).thenReturn(11);
+
+            assertThat(sut.getRaiseResponse(intel)).isEqualTo(-1);
+        }
     }
 
     @Nested @DisplayName("When playing a card")
