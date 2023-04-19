@@ -87,7 +87,7 @@ public class DestroyerBot implements BotServiceProvider {
         if(intel.getOpponentCard().isEmpty() && intel.getCards().size() == 3){
             Optional<TrucoCard> firstCardToPlay = getFirstCardToPlay(intel);
             if(firstCardToPlay.isPresent()){
-                CardToPlay.of(firstCardToPlay.get());
+                return CardToPlay.of(firstCardToPlay.get());
             }
         }
         return CardToPlay.of(intel.getCards().get(0));
@@ -137,6 +137,7 @@ public class DestroyerBot implements BotServiceProvider {
                 return cardWithRankAce;
             }
             if (cardWithRankTwo.isPresent()) {
+                return cardWithRankTwo;
             }
         }
             return Optional.empty();
@@ -149,8 +150,6 @@ public class DestroyerBot implements BotServiceProvider {
                     .filter(card -> card.getRank().equals(rank))
                     .max((card1, card2) -> card1.compareValueTo(card2, vira));
         }
-
-
 
         private Optional<TrucoCard> getCardStrongerThanOpponentOne(GameIntel intel) {
             TrucoCard opponentCard = intel.getOpponentCard().get();
