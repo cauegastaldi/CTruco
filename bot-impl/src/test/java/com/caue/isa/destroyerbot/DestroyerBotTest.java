@@ -67,6 +67,16 @@ class DestroyerBotTest {
         }
 
         @Test
+        @DisplayName("Should respond with point raise if request is a 'nove' and opponent score is greater than" +
+                "five")
+        void shouldReRaisePointRaiseRequestIfIsNoveAndOpponentScoreIsGreaterThanFive(){
+            when(intel.getHandPoints()).thenReturn(6);
+            when(intel.getOpponentScore()).thenReturn(6);
+
+            assertThat(sut.getRaiseResponse(intel)).isEqualTo(1);
+        }
+
+        @Test
         @DisplayName("Should respond with point raise if has strongest manilhas")
         void shouldReRaisePointRaiseRequestIfItHasTheTwoStrongestManilhas(){
             vira = TrucoCard.of(CardRank.KING, CardSuit.SPADES);
