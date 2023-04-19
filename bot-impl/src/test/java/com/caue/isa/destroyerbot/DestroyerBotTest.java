@@ -20,10 +20,7 @@
 
 package com.caue.isa.destroyerbot;
 
-import com.bueno.spi.model.CardRank;
-import com.bueno.spi.model.CardSuit;
-import com.bueno.spi.model.GameIntel;
-import com.bueno.spi.model.TrucoCard;
+import com.bueno.spi.model.*;
 import com.bueno.spi.service.BotServiceProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -112,6 +109,8 @@ class DestroyerBotTest {
         List<TrucoCard> cards;
         Optional<TrucoCard> opponentCard;
 
+        Optional<TrucoCard> opponentCard2;
+
         @Test
         @DisplayName("Should play the weakest card between the strongest ones than the opponent one")
         void shouldPlayTheWeakestCardBetweenTheStrongestOnesThanOpponentOne() {
@@ -175,6 +174,57 @@ class DestroyerBotTest {
             assertThat(sut.chooseCard(intel).content()).isEqualTo(TrucoCard.of(CardRank.KING, CardSuit.SPADES));
         }
 
+        @Test
+        @DisplayName("Should play the lowest rank card in the first round if it has three manilhas")
+        void shouldPlayTheLowestRankManilhaInTheFirstRoundIfItHasThreeManilhas(){
+            vira = TrucoCard.of(CardRank.THREE, CardSuit.HEARTS);
+
+            cards = List.of(TrucoCard.of(CardRank.FOUR, CardSuit.SPADES),
+                    TrucoCard.of(CardRank.FOUR, CardSuit.DIAMONDS),
+                    TrucoCard.of(CardRank.FOUR, CardSuit.CLUBS));
+            when(intel.getVira()).thenReturn(vira);
+            when(intel.getCards()).thenReturn(cards);
+
+            when(intel.getRoundResults()).thenReturn(List.of());
+            assertThat(sut.chooseCard(intel).content()).isEqualTo(TrucoCard.of(CardRank.FOUR, CardSuit.DIAMONDS));
+        }
+
+
+        @Test
+        @DisplayName("Should play the medium rank card in the second round if it has three manilhas")
+        void shouldPlayTheMediumRankManilhaInTheSecondRoundIfItHasThreeManilhas(){
+            vira = TrucoCard.of(CardRank.THREE, CardSuit.HEARTS);
+
+            cards = List.of(TrucoCard.of(CardRank.FOUR, CardSuit.SPADES),
+                    TrucoCard.of(CardRank.FOUR, CardSuit.DIAMONDS),
+                    TrucoCard.of(CardRank.FOUR, CardSuit.CLUBS));
+
+            opponentCard = Optional.of(TrucoCard.of(CardRank.KING, CardSuit.HEARTS));
+            opponentCard2 = Optional.of(TrucoCard.of(CardRank.ACE, CardSuit.SPADES));
+
+            when(intel.getVira()).thenReturn(vira);
+            when(intel.getCards()).thenReturn(cards);
+
+            when(intel.getRoundResults()).thenReturn(List.of(GameIntel.RoundResult.WON));
+            assertThat(sut.chooseCard(intel).value()).isEqualTo(CardToPlay.discard(TrucoCard.of(CardRank.FOUR, CardSuit.SPADES)).value());
+        }
+
+        @Test
+        @DisplayName("Should play the highest rank card in the third round if it has three manilhas")
+        void shouldPlayTheHighestRankManilhaInTheThirdRoundIfItHasThreeManilhas(){
+            vira = TrucoCard.of(CardRank.THREE, CardSuit.HEARTS);
+
+            cards = List.of(TrucoCard.of(CardRank.FOUR, CardSuit.SPADES),
+                    TrucoCard.of(CardRank.FOUR, CardSuit.DIAMONDS),
+                    TrucoCard.of(CardRank.FOUR, CardSuit.CLUBS));
+
+
+            when(intel.getVira()).thenReturn(vira);
+            when(intel.getCards()).thenReturn(cards);
+
+            when(intel.getRoundResults()).thenReturn(List.of(GameIntel.RoundResult.DREW, GameIntel.RoundResult.DREW));
+            assertThat(sut.chooseCard(intel).content()).isEqualTo(TrucoCard.of(CardRank.FOUR, CardSuit.CLUBS));
+        }
     }
     @Nested
     @DisplayName("When requesting a point raise")
